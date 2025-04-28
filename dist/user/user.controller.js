@@ -15,16 +15,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
 const user_service_1 = require("./user.service");
+const user_SignupDto_1 = require("./dto/user.SignupDto");
+const user_LoginDto_1 = require("./dto/user.LoginDto");
 let UserController = class UserController {
     userService;
     constructor(userService) {
         this.userService = userService;
     }
-    async addUser(body) {
-        return await this.userService.addUser(body);
+    async signup(SignupDto) {
+        return await this.userService.signup(SignupDto);
     }
-    async getUsers() {
-        return await this.userService.getUsers();
+    async login(LoginDto) {
+        return await this.userService.login(LoginDto);
     }
     async deleteUser(body) {
         return await this.userService.deleteUser(body);
@@ -32,18 +34,19 @@ let UserController = class UserController {
 };
 exports.UserController = UserController;
 __decorate([
-    (0, common_1.Post)('/insert'),
+    (0, common_1.Post)('/signup'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [user_SignupDto_1.SignupDto]),
     __metadata("design:returntype", Promise)
-], UserController.prototype, "addUser", null);
+], UserController.prototype, "signup", null);
 __decorate([
-    (0, common_1.Get)('/list'),
+    (0, common_1.Post)("/login"),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [user_LoginDto_1.LoginDto]),
     __metadata("design:returntype", Promise)
-], UserController.prototype, "getUsers", null);
+], UserController.prototype, "login", null);
 __decorate([
     (0, common_1.Delete)('/id'),
     __param(0, (0, common_1.Body)()),

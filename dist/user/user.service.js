@@ -17,17 +17,30 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const user_model_1 = require("./user.model");
 const typeorm_2 = require("typeorm");
+const http_errors_1 = require("http-errors");
 let UserService = class UserService {
     userRepository;
     constructor(userRepository) {
         this.userRepository = userRepository;
     }
-    async getUsers() {
-        return await this.userRepository.find();
-    }
-    async addUser(data) {
+    async signup(data) {
+        const exist = await this.userRepository.findOne({ where: { email: data.email } });
+        if (exist) {
+            throw (0, http_errors_1.default)(500, 'User already exists');
+        }
         const user = this.userRepository.create(data);
         return this.userRepository.save(user);
+    }
+    async login(data) {
+        const find = await this.userRepository.findOne({ where: { email: data.email } });
+        if (!find) {
+            throw (0, http_errors_1.default)(400, "User with email" + data.email + "does not exist");
+        }
+        const user = new user_model_1.User();
+        user.email = find.email;
+        user.id = find.id;
+        user.password = find.password;
+        return await user;
     }
     async deleteUser(id) {
         try {

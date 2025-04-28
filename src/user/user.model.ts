@@ -5,9 +5,15 @@ export class User{
     @PrimaryGeneratedColumn("uuid")
     id:number
 
-    @Column()
+    @Column({name:"firstname",type:"varchar",length:50})
+    firstname:string
+
+    @Column({name:"lastname",type:"varchar",length:50})
+    lastname:string 
+
+    @Column({name:"email",type:"varchar"})
     email:string
 
-    @Column()
+    @Column({name:"password",type:"varchar",length:128})
     password:string
 }
