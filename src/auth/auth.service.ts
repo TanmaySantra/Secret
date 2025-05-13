@@ -17,6 +17,7 @@ export class AuthService {
   ) {}
 
   async signup(data: SignupDto) {
+    console.log(data)
     return await this.userService.createUser({
       ...data,
       password: bcrypt.hashSync(data.password.trim(), 10),
