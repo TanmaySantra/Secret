@@ -14,11 +14,11 @@ export class UserService {
   ) {}
 
   async createUser(data: SignupDto): Promise<User> {
-    const exist = await this.userRepository.findOne({
+    const exists = await this.userRepository.findOne({
       where: { email: data.email },
     });
-    if (exist) {
-      throw createHttpError(500, 'User already exists');
+    if (exists) {
+      throw new Error('User already exists');
     }
     const user = this.userRepository.create(data);
     return await this.userRepository.save(user);
@@ -32,8 +32,8 @@ export class UserService {
     const user: UserDetails = {
       id: getUser.id,
       email: getUser.email,
-      firstname: getUser.firstname,
-      lastname: getUser.lastname,
+      firstName: getUser.firstName,
+      lastName: getUser.lastName,
     };
     return user;
   }
@@ -43,8 +43,8 @@ export class UserService {
     return users.map((item) => ({
       id: item.id,
       email: item.email,
-      firstname: item.firstname,
-      lastname: item.lastname,
+      firstName: item.firstName,
+      lastName: item.lastName,
     }));
   }
 
@@ -62,8 +62,8 @@ export class UserService {
     return {
       id: savedUser.id,
       email: savedUser.email,
-      firstname: savedUser.firstname,
-      lastname: savedUser.lastname,
+      firstName: savedUser.firstName,
+      lastName: savedUser.lastName,
     };
   }
 
@@ -81,8 +81,8 @@ export class UserService {
     return {
       id: savedUser.id,
       email: savedUser.email,
-      firstname: savedUser.firstname,
-      lastname: savedUser.lastname,
+      firstName: savedUser.firstName,
+      lastName: savedUser.lastName,
     };
   }
 
@@ -90,8 +90,8 @@ export class UserService {
     return {
         id: user.id,
         email: user.email,
-        firstname: user.firstname,
-        lastname: user.lastname,
+        firstName: user.firstName,
+        lastName: user.lastName,
     };
   }
 

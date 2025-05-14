@@ -17,11 +17,11 @@ export class AuthService {
   ) {}
 
   async signup(data: SignupDto) {
-    console.log(data)
-    return await this.userService.createUser({
+    const createdUser = await this.userService.createUser({
       ...data,
       password: bcrypt.hashSync(data.password.trim(), 10),
     });
+    return this.userService.getUserDetails(createdUser)
   }
 
   async login(data: LoginDto) {
