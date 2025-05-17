@@ -2,7 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { json, urlencoded } from 'express';
 import { ValidationPipe } from '@nestjs/common';
-import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
+import { ExceptionHandler } from './core/middlewares/ExceptionHandler';
+import { ResponseHandler } from './core/middlewares/ResponseHandler';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,7 +20,8 @@ async function bootstrap() {
       forbidNonWhitelisted: true
     })
   );
-  app.useGlobalFilters(new ExceptionsHandler())
+  app.useGlobalInterceptors(new ResponseHandler())
+  app.useGlobalFilters(new ExceptionHandler())
   await app.listen(process.env.PORT ?? 8080, () => {
     console.log('Running at http://localhost:' + (process.env.PORT?? 8080));
   });

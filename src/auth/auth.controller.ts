@@ -1,7 +1,8 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { SignupDto } from './dto/SignupDto';
 import { LoginDto } from './dto/LoginDto';
 import { AuthService } from './auth.service';
+import { AuthGuard } from 'src/core/AuthGuard';
 
 @Controller('auth')
 export class AuthController {
@@ -16,5 +17,12 @@ export class AuthController {
   @Post("/login")
   async login(@Body() loginDto:LoginDto){
     return await this.authService.login(loginDto)
+  }
+
+
+  @UseGuards(AuthGuard)
+  @Get("/protected")
+  async testProtected() {
+    return "working"
   }
 }

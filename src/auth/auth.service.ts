@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { SignupDto } from './dto/SignupDto';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
@@ -7,6 +7,7 @@ import { User } from 'src/user/user.model';
 import { Repository } from 'typeorm';
 import { LoginDto } from './dto/LoginDto';
 import createHttpError from 'http-errors';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +15,7 @@ export class AuthService {
     private readonly userService: UserService,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtService
   ) {}
 
   async signup(data: SignupDto) {
@@ -29,15 +31,21 @@ export class AuthService {
       where: { email: data.email },
     });
     if (!find) {
-      throw createHttpError(
-        400,
-        'User with email' + data.email + 'does not exist',
-      );
+      throw new BadRequestException('User with email' + data.email + 'does not exist')
     }
-
-    if (!bcrypt.compareSync(find.password, data.password)) {
-      throw createHttpError(400, 'Password does not match');
+    console.log(find.password, data.password, bcrypt.compareSync(find.password, data.password))
+    if (!bcrypt.compareSync(data.password, find.password)) {
+      throw new UnauthorizedException("User not authorized")
     }
-    return this.userService.getUserDetails(find);
+    const userData = this.userService.getUserDetails(find)
+    const tokenSignData = {
+      email: userData.email,
+      id: userData.id,
+    }
+    return ({
+      ...userData,
+      token: this.jwtService.sign(tokenSignData),
+      expiresAt: (new Date()).getTime() + 25*1000
+    })
   }
 }
