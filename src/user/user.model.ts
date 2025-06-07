@@ -1,5 +1,6 @@
 import { BaseEntity } from 'src/base/base.entity';
-import { Column, Entity } from 'typeorm';
+import { Data } from 'src/data/data.model';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -14,4 +15,7 @@ export class User extends BaseEntity {
 
   @Column({ name: 'password', type: 'varchar', length: 128,nullable: false })
   password: string;
+
+  @OneToMany(() => Data, (data) => data.createdBy)
+  data:Data[]
 }
