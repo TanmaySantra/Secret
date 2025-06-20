@@ -19,7 +19,6 @@ export class AuthController {
     return await this.authService.login(loginDto)
   }
 
-
   @UseGuards(AuthGuard)
   @Get("/protected")
   async testProtected() {

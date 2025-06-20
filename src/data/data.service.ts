@@ -4,6 +4,7 @@ import { Data } from "./data.model";
 import { Repository } from "typeorm";
 import { CreateDataDto} from "./dto/createDataDto";
 import createHttpError from "http-errors";
+import { UpdateDataDto } from "./dto/updateDataDto";
 
 @Injectable()
 export class DataService{
@@ -33,9 +34,29 @@ export class DataService{
     return list;
     }
 
-    async updateData(){
-                
+    async getManyByUser(userId:string){
+        const dataList = await this.secretRepo.find({
+      where: { createdBy: { id: userId } },
+      relations: ['createdBy'],
+    });
+    if (!dataList.length) {
+      throw createHttpError(404, 'No data found for this user');
     }
-    //update
-    //delete
+    return dataList;                
+    }
+
+    async updateData(id: string, dto:UpdateDataDto): Promise<Data> {
+    const data = await this.secretRepo.findOneBy({ id });
+    if (!data) throw createHttpError(404, 'Data not found');
+    Object.assign(data, dto);
+    return await this.secretRepo.save(data);
+  }
+      
+  async deleteData(id: string): Promise<{ message: string }> {
+    const result = await this.secretRepo.delete(id);
+    if (result.affected === 0) {
+      throw createHttpError(404, 'Data not found');
+    }
+    return { message: 'Data deleted successfully' };
+  }
 }

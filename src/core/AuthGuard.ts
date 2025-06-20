@@ -24,7 +24,6 @@ export class AuthGuard implements CanActivate {
         token,
         {
           secret: process.env.JWT_SECRET,
-
         }
       );
       // 💡 We're assigning the payload to the request object here

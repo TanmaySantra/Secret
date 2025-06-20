@@ -18,12 +18,13 @@ import { SecretValues } from './config';
       return {
         type: 'postgres',
         host: data.host,
-        port: data.port,
+        port: data.dbport,
         username: data.user,
         password: data.password,
         database:data.database,
         synchronize:data.synchronize,
         ssl:data.ssl,
+        entities:[User,Data]
       }
     }
     }), AuthModule,DataModule],

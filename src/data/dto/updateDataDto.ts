@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString, IsUUID } from "class-validator";
 
-export class CreateDataDto{
+export class UpdateDataDto{
     @IsNotEmpty()
     @IsString()
     title:string;
@@ -8,8 +8,4 @@ export class CreateDataDto{
     @IsNotEmpty()
     @IsString()
     value:string;
-
-    @IsNotEmpty()
-    @IsUUID()
-    secretId:string;
 }
