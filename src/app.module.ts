@@ -8,17 +8,24 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { DataModule } from './data/data.module';
 import { Data } from './data/data.model';
-
+import { SecretValues } from './config';
 @Module({
-  imports: [ConfigModule.forRoot(), UserModule, TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: '12345',
-      database: 'secret',
-      entities: [User,Data],
-      synchronize: true,
+  imports: [ConfigModule.forRoot(), UserModule, TypeOrmModule.forRootAsync({
+    useFactory: ()=>{
+      const secret= new SecretValues();
+      const data=secret.getSecret();
+      console.log(data)
+      return {
+        type: 'postgres',
+        host: data.host,
+        port: data.port,
+        username: data.user,
+        password: data.password,
+        database:data.database,
+        synchronize:data.synchronize,
+        ssl:data.ssl,
+      }
+    }
     }), AuthModule,DataModule],
   controllers: [AppController],
   providers: [AppService],

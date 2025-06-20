@@ -31,7 +31,7 @@ export class AuthService {
       where: { email: data.email },
     });
     if (!find) {
-      throw new BadRequestException('User with email' + data.email + 'does not exist')
+      throw new BadRequestException('User with email' + data.email + 'does not exist') 
     }
     console.log(find.password, data.password, bcrypt.compareSync(find.password, data.password))
     if (!bcrypt.compareSync(data.password, find.password)) {
