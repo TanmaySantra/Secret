@@ -4,7 +4,7 @@ export class SecretValues{
  private SECRET : string;
  private HOST: string;
  private DBPORT: number;
- private USER: string;
+ private DBUSER: string;
  private PASSWORD: string;
  private DATABASE: string;
  private SYNCHRONIZE:boolean;
@@ -15,9 +15,10 @@ export class SecretValues{
     this.SECRET=process.env.JWT_SECRET as string
     this.HOST= process.env.HOST as string
     this.DBPORT=  Number(process.env.DBPORT)
-    this.USER= process.env.USER as string
+    this.DBUSER= process.env.DBUSER as string
     this.PASSWORD= process.env.PASSWORD as string
     this.DATABASE= process.env.DATABASE as string
+    console.log("boolean value", Boolean(process.env.SYNCHRONIZE))
     this.SYNCHRONIZE=  Boolean(process.env.SYNCHRONIZE)
     this.SSL= Boolean(process.env.SSL)
     this.GLOBAL=Boolean(process.env.GLOBAL)
@@ -28,7 +29,7 @@ export class SecretValues{
         host:this.HOST,
         dbport:this.DBPORT,
         password:this.PASSWORD,
-        user:this.USER,
+        dbuser:this.DBUSER,
         database:this.DATABASE,
         synchronize:this.SYNCHRONIZE,
         ssl:this.SSL,

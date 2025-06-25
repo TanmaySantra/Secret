@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Data } from "./data.model";
 import { Repository } from "typeorm";
@@ -18,23 +18,39 @@ export class DataService{
     ){} 
     async create(data:CreateDataDto,user:UserDetails):Promise<Data>{  
       console.log(user)
-      const foundUser=await this.userService.getUserById(user.id)      
+      const foundUser=await this.userService.getUserById(user.id)
       const secretData={
         createdBy:foundUser as User,
         title:data.title,
         Value:data.value
       }
-        const secret =this.secretRepo.create(secretData);
-        return await this.secretRepo.save(secret);
+      console.log("foundUser", secretData)
+      const secret =this.secretRepo.create(secretData);
+      return await this.secretRepo.save(secret);
     }
 
-    async getOne(id:string){ //get data from secret id
-        const find = await this.secretRepo.findOneBy({id})
-        if(!find)
-        {
-          throw createHttpError("Data Not found");
+    async getOne(id:string, userId: string){ //get data from secret id
+      const find = await this.secretRepo.findOne({where: {id}, relations: {
+        createdBy: true
+      }})
+      if(!find)
+      {
+        throw new NotFoundException("Data Not found");
+      }
+      console.log(find.createdBy.id, userId)
+      if(find.createdBy.id !== userId) {
+        throw new ForbiddenException("User not allowed to do this task")
+      }
+      return ({
+        ...find,
+        createdBy: {
+          id: find.createdBy.id,
+          firstName: find.createdBy.firstName,
+          lastName: find.createdBy.lastName,
+          email: find.createdBy.email
         }
-        return find;
+      });
+     
     }   
 
     async getMany(id: string): Promise<Data[]> {
@@ -45,27 +61,33 @@ export class DataService{
     return list;
     }
 
-    async getManyByUser(userId:string){
-      const dataList = await this.secretRepo.find({where:{ createdBy: { id: userId } }
+    async getManyByUser(userId:string, page: number, take: number){
+      const dataList = await this.secretRepo.find({
+        take,
+        skip: (page - 1) * take,
+        where:{ 
+          createdBy: { id: userId },
+        }
       });
-      if (!dataList.length) {
-        throw createHttpError(404, 'No data found for this user');
-      }
-      return dataList;                
+      const count = await this.secretRepo.count({where: {createdBy: {id: userId}}})
+      return {
+        data: dataList,
+        count
+      };                
     }
 
-    async updateData(id: string, dto:UpdateDataDto): Promise<Data> {
-    const data = await this.secretRepo.findOneBy({ id });
-    if (!data) throw createHttpError(404, 'No data found for this user');
-    Object.assign(data, dto);
-    return await this.secretRepo.save(data);
-  }
+  // async updateData(id: string, dto:UpdateDataDto): Promise<Data> {
+  //   const data = await this.secretRepo.findOneBy({ id });
+  //   if (!data) throw createHttpError(404, 'No data found for this user');
+  //   Object.assign(data, dto);
+  //   return await this.secretRepo.save(data);
+  // }
       
-  async deleteData(id: string): Promise<{ message: string }> {
-    const result = await this.secretRepo.delete(id);
-    if (result.affected === 0) {
-      throw createHttpError(404, 'No data found for this user');
-    }
-    return { message: 'Data deleted successfully' };
-  }
+  // async deleteData(id: string): Promise<{ message: string }> {
+  //   const result = await this.secretRepo.delete(id);
+  //   if (result.affected === 0) {
+  //     throw createHttpError(404, 'No data found for this user');
+  //   }
+  //   return { message: 'Data deleted successfully' };
+  // }
 }

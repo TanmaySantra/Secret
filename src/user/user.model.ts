@@ -16,6 +16,6 @@ export class User extends BaseEntity {
   @Column({ name: 'password', type: 'varchar', length: 128,nullable: false })
   password: string;
 
-  @OneToMany(() => Data, (data) => data.createdBy)
-  data:Data[]
+  @OneToMany(() => Data, (ref) => ref.createdBy)
+  data: Data[]
 }

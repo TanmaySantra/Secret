@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Request, UseGuards } from "@nestjs/common";
 import { DataService } from "./data.service";
 import { CreateDataDto} from "./dto/createDataDto";
 import { Data } from "./data.model";
@@ -15,25 +15,29 @@ export class DataController{
         return await this.dataService.create(dataDto,req["user"]);
     }
 
-    @Get(':id')
-    async getOneData(@Body() id:string):Promise<Data>
+    @UseGuards(AuthGuard)
+    @Get()
+    async getOneData(@Query("id") id:string, @Request() req:Request)
     {
-        return await this.dataService.getOne(id)
+        return await this.dataService.getOne(id, req["user"].id)
     }
 
-    @Get('user/:userId')
-    async getUserData(@Body() userId:string)
+    @UseGuards(AuthGuard)
+    @Get('all')
+    async getAllData(@Query("page") page:number, @Query("take") take:number, @Request() req:Request)
     {
-        return await this.dataService.getManyByUser(userId)
+        return await this.dataService.getManyByUser(req["user"].id, page, take)
     }
     
-    @Patch(':id')
-    async updateData(@Param('id') id: string,@Body() updateDto: UpdateDataDto): Promise<Data> {
-    return await this.dataService.updateData(id, updateDto);
-    }
+    // @UseGuards(AuthGuard)
+    // @Patch(':id')
+    // async updateData(@Param('id') id: string,@Body() updateDto: UpdateDataDto): Promise<Data> {
+    // return await this.dataService.updateData(id, updateDto);
+    // }
 
-    @Delete(':id')
-    async deleteData(@Param('id') id: string): Promise<{ message: string }> {
-    return await this.dataService.deleteData(id);
-    }
+    // @UseGuards(AuthGuard)
+    // @Delete(':id')
+    // async deleteData(@Param('id') id: string): Promise<{ message: string }> {
+    // return await this.dataService.deleteData(id);
+    // }
 }
