@@ -18,7 +18,6 @@ export class SecretValues{
     this.DBUSER= process.env.DBUSER as string
     this.PASSWORD= process.env.PASSWORD as string
     this.DATABASE= process.env.DATABASE as string
-    console.log("boolean value", Boolean(process.env.SYNCHRONIZE))
     this.SYNCHRONIZE=  Boolean(process.env.SYNCHRONIZE)
     this.SSL= Boolean(process.env.SSL)
     this.GLOBAL=Boolean(process.env.GLOBAL)

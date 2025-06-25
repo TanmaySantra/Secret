@@ -51,14 +51,6 @@ export class DataService{
         }
       });
      
-    }   
-
-    async getMany(id: string): Promise<Data[]> {
-    const list = await this.secretRepo.find({ where: { id } });
-    if (!list ) {
-        throw createHttpError(404, "No data found for this user");
-    }
-    return list;
     }
 
     async getManyByUser(userId:string, page: number, take: number){
