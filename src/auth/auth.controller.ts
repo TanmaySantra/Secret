@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { SignupDto } from './dto/SignupDto';
 import { LoginDto } from './dto/LoginDto';
 import { AuthService } from './auth.service';
@@ -21,7 +21,8 @@ export class AuthController {
 
   @UseGuards(AuthGuard)
   @Get("/protected")
-  async testProtected() {
+  async testProtected(@Request() req:Request) {
+    console.log(req)
     return "working"
   }
 }

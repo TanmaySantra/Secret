@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { LoginDto } from './dto/LoginDto';
 import createHttpError from 'http-errors';
 import { JwtService } from '@nestjs/jwt';
+import { UserDetails } from 'src/user/interfaces/user.interface';
 
 @Injectable()
 export class AuthService {
@@ -38,13 +39,10 @@ export class AuthService {
       throw new UnauthorizedException("User not authorized")
     }
     const userData = this.userService.getUserDetails(find)
-    const tokenSignData = {
-      email: userData.email,
-      id: userData.id,
-    }
+    
     return ({
       ...userData,
-      token: this.jwtService.sign(tokenSignData),
+      token: this.jwtService.sign(userData),
       expiresAt: (new Date()).getTime() + 25*1000
     })
   }

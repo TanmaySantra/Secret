@@ -9,7 +9,7 @@ export class CreateDataDto{
     @IsString()
     value:string;
 
-    @IsNotEmpty()
-    @IsUUID()
-    secretId:string;
+    // @IsNotEmpty()
+    // @IsUUID()
+    // secretId:string;
 }

@@ -20,7 +20,7 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException("Invalid Token");
     }
     try {
-      const payload = await this.jwtService.verifyAsync(
+      const tokenData = await this.jwtService.verifyAsync(
         token,
         {
           secret: process.env.JWT_SECRET,
@@ -28,7 +28,8 @@ export class AuthGuard implements CanActivate {
       );
       // 💡 We're assigning the payload to the request object here
       // so that we can access it in our route handlers
-      request['user'] = payload;
+      request['user'] = tokenData;
+      console.log(tokenData)
     } catch(err) {
       console.log(err)
       throw new UnauthorizedException("User Unauthorized");
