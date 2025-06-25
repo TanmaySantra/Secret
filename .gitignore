@@ -1,5 +1,9 @@
-# compiled output
+
 *.env
+*.env.example
+*.env.local
+*.env.staging
+# compiled output
 /dist
 /node_modules
 # /build
