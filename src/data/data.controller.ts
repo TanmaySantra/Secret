@@ -9,6 +9,11 @@ import { AuthGuard } from "src/core/AuthGuard";
 export class DataController{
     constructor(private readonly dataService: DataService){}
 
+    @Get('health')
+    async getHealth(){
+        return 'Running'
+    }
+    
     @UseGuards(AuthGuard)
     @Post('add')
     async addData(@Body() dataDto:CreateDataDto, @Request() req:Request):Promise<Data>{
