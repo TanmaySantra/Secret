@@ -11,6 +11,7 @@ async function bootstrap() {
     rawBody: true,
     bodyParser: false
   });
+  app.enableCors()
   app.setGlobalPrefix("api")
   app.use(json({ limit: '50mb' }));
   app.use(urlencoded({ limit: '50mb', extended: true }));
